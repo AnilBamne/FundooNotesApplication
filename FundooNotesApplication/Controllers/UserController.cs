@@ -37,12 +37,12 @@ namespace FundooNotesApplication.Controllers
                     var name=HttpContext.Session.GetString(UserName);
                     var email = HttpContext.Session.GetString(UserEmail);
                     logger.LogInformation("Registratin Proccess was successfull");
-                    return Ok(new ResponseModel<UserEntity> { Status = true, Message = "Register succesfull", Data = result });
+                    return Ok(new ResponseModel<UserEntity> { Status = true, Message = "Registered succesfully", Data = result });
                 }
                 else
                 {
                     logger.LogWarning("Registration failed, try again with propper inputs");
-                    return BadRequest(new ResponseModel<UserEntity> { Status = false, Message = "Register not succesfull", Data = result });
+                    return BadRequest(new ResponseModel<UserEntity> { Status = false, Message = "Registeration failed", Data = result });
                 }
             }
             catch(Exception ex)
@@ -67,7 +67,7 @@ namespace FundooNotesApplication.Controllers
                 }
                 else
                 {
-                    return BadRequest(new ResponseModel<string> { Status = false, Message = "Login not succesfull", Data = result });
+                    return BadRequest(new ResponseModel<string> { Status = false, Message = "Login failed", Data = result });
                 }
             }
             catch(Exception ex)
@@ -84,7 +84,7 @@ namespace FundooNotesApplication.Controllers
                 var result = userBusiness.ForgetPassword(email);
                 if (result != null)
                 {
-                    return Ok(new ResponseModel<string> { Status = true, Message = "Set new password", Data = result });
+                    return Ok(new ResponseModel<string> { Status = true, Message = "Reset link sent to your registered email, Set new password", Data = result });
                 }
                 else
                 {

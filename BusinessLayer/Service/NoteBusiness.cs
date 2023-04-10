@@ -98,5 +98,15 @@ namespace BusinessLayer.Service
                 throw ex;
             }
         }
+
+        public List<NoteEntity> GetNoteByKeawords(string input)
+        {
+            return notesRepository.GetNoteByKeawords(input);
+        }
+
+        public string SetNoteColor(long userId, long noteId, string color)
+        {
+            return notesRepository.SetNoteColor(userId, noteId, color);
+        }
     }
 }

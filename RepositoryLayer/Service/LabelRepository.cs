@@ -26,14 +26,23 @@ namespace RepositoryLayer.Service
         {
             try
             {
-                LabelEntity labelEntity = new LabelEntity();
-                
-                labelEntity.LabelName= labelName;
-                labelEntity.UserId = userId;
-                labelEntity.NoteId= noteId;
-                fundooContext.LableTable.Add(labelEntity);
-                fundooContext.SaveChanges();
-                return labelEntity;
+                var userResult = this.fundooContext.UserDataTable.Where(e => e.UserId == userId).FirstOrDefault();
+                var noteResult = this.fundooContext.NoteDataTable.Where(e => e.NoteId == noteId).FirstOrDefault();
+                if (userResult != null&& noteResult != null)
+                {
+                    LabelEntity labelEntity = new LabelEntity();
+
+                    labelEntity.LabelName = labelName;
+                    labelEntity.UserId = userId;
+                    labelEntity.NoteId = noteId;
+                    fundooContext.LableTable.Add(labelEntity);
+                    fundooContext.SaveChanges();
+                    return labelEntity;
+                }
+                else
+                {
+                    return null;
+                }
             }
             catch(Exception ex)
             {
@@ -42,16 +51,29 @@ namespace RepositoryLayer.Service
         }
 
         //Get all
-        public List<LabelEntity> GetAllLabels(long userId)
+        //public List<LabelEntity> GetAllLabels(long userId)
+        //{
+        //    try
+        //    {
+        //        var labelList = fundooContext.LableTable.Where(l => l.UserId == userId).ToList();
+        //        return labelList;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
+
+        public IEnumerable<LabelEntity> GetAllLabels(long labelId)
         {
             try
             {
-                var labelList = fundooContext.LableTable.Where(l => l.UserId == userId).ToList();
-                return labelList;
+                var result = fundooContext.LableTable.Where(e => e.LabelId == labelId).ToList();
+                return result;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
         //update label
@@ -86,18 +108,18 @@ namespace RepositoryLayer.Service
         }
 
         //delete label
-        public bool DeleteLabel(long noteId, long userId)
+        public bool DeleteLabel(long labelId, long userId)
         {
             try
             {
                 var getUser = fundooContext.LableTable.Where(a => a.UserId == userId);
                 if (getUser != null)
                 {
-                    var findNote = getUser.FirstOrDefault(a => a.NoteId == noteId);
-                    if (findNote != null)
+                    var findLabel = getUser.FirstOrDefault(a => a.LabelId == labelId);
+                    if (findLabel != null)
                     {
                         //if the note is present we r removing it from table
-                        fundooContext.LableTable.Remove(findNote);
+                        fundooContext.LableTable.Remove(findLabel);
                         fundooContext.SaveChanges();
                         return true;
                     }
@@ -114,6 +136,37 @@ namespace RepositoryLayer.Service
             catch (Exception ex)
             {
                 throw ex;
+            }
+        }
+        //add existing label
+        public LabelEntity AddExistingLabel(long userId,long noteId,long labelId)
+        {
+            var result = fundooContext.NoteDataTable.FirstOrDefault(a => a.NoteId == noteId);
+            if(result != null)
+            {
+                var label=fundooContext.LableTable.FirstOrDefault(a => a.LabelId == labelId);
+                if(label != null)
+                {
+                    //LabelEntity entity = new LabelEntity();
+                    //entity.LabelId=labelId;
+                    //entity.UserId = userId;
+                    //entity.NoteId = noteId;
+                    //fundooContext.Add(entity);
+                    //fundooContext.SaveChanges();
+                    //return entity;
+                    label.NoteId = noteId;
+                    label.UserId = userId;
+                    fundooContext.SaveChanges();
+                    return label;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
             }
         }
     }

@@ -116,15 +116,26 @@ namespace FundooNotesApplication
                 };
 
             });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(
+                    name: "AllowOrigin",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                    });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors("AllowOrigin");
             // This middleware serves generated Swagger document as a JSON endpoint
             app.UseAuthentication();
             app.UseSwagger();
-
+            app.UseSession();
             // This middleware serves the Swagger documentation UI
             app.UseSwaggerUI(c =>
             {
@@ -147,6 +158,8 @@ namespace FundooNotesApplication
             {
                 endpoints.MapControllers();
             });
+
+           
         }
     }
 }

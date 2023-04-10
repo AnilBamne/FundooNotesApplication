@@ -56,7 +56,15 @@ namespace CommonLayer
                                 $"<html>" +
                                 $"<style>" +
                                 $".blink" +
-                                $"</style>";
+                                $"</style>" +
+                                $"<body style=\"background-color:#WDBFF73;text-align:center;padding:5px;\">" +
+                                $"<h1 style=\"color:#648D02;border-bottom:3px solid #84AF08;margin-top:5px\">Dear <b>{recieverName}</b></h1>\n" +
+                                $"<h3 style=\"color:#8AB411;\"> For Resetting Password The Below Link Is Issued</h3>" +
+                                $"<h3 style=\"color:#8AB411;\"> Click Below Link For Resetting Your Password</h3>" +
+                                $"<a style=\"color:#00802b;text-decoration:none;font-size:20px;\" href='http://localhost:4200/resetPassword/{token}'>Click Here</a>\n" +
+                                $"<h3 style=\"color:#8AB411;margin-bottom:5px;\"><blink>Token Will Be Valid For Next 1 Hour</blink></h3>" +
+                                $"</body>" +
+                                $"</html>";
 
                 mailMessage.Body = mailBody;
                 mailMessage.IsBodyHtml= true;

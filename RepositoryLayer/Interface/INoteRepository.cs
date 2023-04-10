@@ -15,5 +15,7 @@ namespace RepositoryLayer.Interface
         public bool PinOrUnpinNote(long userId, long noteId);
         public bool TrashOrUntrash(long userId, long noteId);
         public bool ArchiveOrUnarchive(long userId, long noteId);
+        public List<NoteEntity> GetNoteByKeawords(string input);
+        public string SetNoteColor(long userId, long noteId, string color);
     }
 }

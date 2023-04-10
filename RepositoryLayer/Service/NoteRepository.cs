@@ -203,5 +203,20 @@ namespace RepositoryLayer.Service
                 throw ex;
             }
         }
+
+       public List<NoteEntity> GetNoteByKeawords(string input)
+       {
+            var result = fundooContext.NoteDataTable.Where(a => a.Description.Contains(input) || a.Title.Contains(input)).ToList();
+
+            return result;
+       }
+
+        public string SetNoteColor(long userId,long noteId,string color)
+        {
+            NoteEntity note = fundooContext.NoteDataTable.Where(a => a.NoteId == noteId).FirstOrDefault();
+            note.Color = color;
+            fundooContext.SaveChanges();
+            return note.Color;
+        }
     }
 }

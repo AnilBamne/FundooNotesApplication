@@ -166,5 +166,35 @@ namespace FundooNotesApplication.Controllers
                 return Ok(new ResponseModel<bool> { Status = true, Message = "Note UnArchived Successfully", Data = result });
             }
         }
+        [Authorize]
+        [HttpPut("SetNoteColor")]
+        public ActionResult SetNoteColor(long noteId,string color)
+        {
+            long userId = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserId").Value);
+            var result = notesBusiness.SetNoteColor(userId, noteId,color);
+            if (result != null)
+            {
+                return Ok(new ResponseModel<string> { Status = true, Message = "Color applied to note Successfully", Data = result });
+            }
+            else
+            {
+                return Ok(new ResponseModel<string> { Status = true, Message = "Color application failed ", Data = result });
+            }
+        }
+
+        [Authorize]
+        [HttpGet("GetNoteByKeyword")]
+        public ActionResult SearchNote(string keyword)
+        {
+            var res = notesBusiness.GetNoteByKeawords(keyword);
+            if (res != null)
+            {
+                return Ok(new ResponseModel<List<NoteEntity>> { Status = true, Message = "Note having keyword fount", Data = res });
+            }
+            else
+            {
+                return Ok(new ResponseModel<List<NoteEntity>> { Status = true, Message = "No such notes are available", Data = null });
+            }
+        }
     }
 }

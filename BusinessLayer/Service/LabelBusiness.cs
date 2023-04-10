@@ -26,11 +26,11 @@ namespace BusinessLayer.Service
                 throw ex;
             }
         }
-        public List<LabelEntity> GetAllLabels(long userId)
+        public IEnumerable<LabelEntity> GetAllLabels(long labelId)
         {
             try
             {
-                return labelRepository.GetAllLabels(userId);
+                return labelRepository.GetAllLabels(labelId);
             }
             catch (Exception ex)
             {
@@ -48,16 +48,20 @@ namespace BusinessLayer.Service
                 throw ex;
             }
         }
-        public bool DeleteLabel(long noteId, long userId)
+        public bool DeleteLabel(long labelId, long userId)
         {
             try
             {
-                return labelRepository.DeleteLabel(noteId,userId);
+                return labelRepository.DeleteLabel(labelId, userId);
             }
             catch (Exception ex)
             {
                 throw ex;
             }
+        }
+        public LabelEntity AddExistingLabel(long userId, long noteId, long labelId)
+        {
+            return labelRepository.AddExistingLabel(userId, noteId, labelId);
         }
     }
 }

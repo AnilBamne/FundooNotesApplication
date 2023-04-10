@@ -94,7 +94,7 @@ namespace RepositoryLayer.Service
                 issuer:configuration["Jwt:Issuer"],
                 audience:configuration["Jwt:Audience"],
                 claims,
-                expires: DateTime.Now.AddHours(1),
+                expires: DateTime.Now.AddHours(6),
                 signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
