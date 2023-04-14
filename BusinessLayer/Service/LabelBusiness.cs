@@ -26,11 +26,11 @@ namespace BusinessLayer.Service
                 throw ex;
             }
         }
-        public IEnumerable<LabelEntity> GetAllLabels(long labelId)
+        public IEnumerable<LabelEntity> GetAllLabels(long userId)
         {
             try
             {
-                return labelRepository.GetAllLabels(labelId);
+                return labelRepository.GetAllLabels(userId);
             }
             catch (Exception ex)
             {
@@ -62,6 +62,10 @@ namespace BusinessLayer.Service
         public LabelEntity AddExistingLabel(long userId, long noteId, long labelId)
         {
             return labelRepository.AddExistingLabel(userId, noteId, labelId);
+        }
+        public List<NoteEntity> GetNoteByLabel(string labelName, long userId)
+        {
+            return labelRepository.GetNoteByLabel(labelName, userId);
         }
     }
 }

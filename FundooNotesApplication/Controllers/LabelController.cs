@@ -47,19 +47,19 @@ namespace FundooNotesApplication.Controllers
         }
         [Authorize]
         [HttpGet("GetAllLabel")]
-        public ActionResult GetAllLabel( long labelId)
+        public ActionResult GetAllLabel()
         {
             try
             {
                 long userId=Convert.ToInt32(User.Claims.FirstOrDefault(a=>a.Type=="UserId").Value);
-                var result = labelBusiness.GetAllLabels(labelId);
+                var result = labelBusiness.GetAllLabels(userId);
                 if(result != null)
                 {
                     return Ok(new ResponseModel<IEnumerable<LabelEntity>> { Status=true,Message="Getting All Labels Succesfull",Data = result});
                 }
                 else
                 {
-                    return BadRequest(new ResponseModel<IEnumerable<LabelEntity>> { Status = false, Message = "Getting All Labels Failed", Data = null }); ;
+                    return BadRequest(new ResponseModel< IEnumerable<LabelEntity>> { Status = false, Message = "Getting All Labels Failed", Data = null }); ;
                 }
             }
             catch(Exception ex)
@@ -135,6 +135,22 @@ namespace FundooNotesApplication.Controllers
             catch (Exception ex)
             {
                 throw ex;
+            }
+        }
+
+        [Authorize]
+        [HttpGet("GetNoteByLabel")]
+        public ActionResult GetNoteByLabel(string labelName)
+        {
+            long userId = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserId").Value);
+            var result = this.labelBusiness.GetNoteByLabel(labelName, userId);
+            if (result != null)
+            {
+                return Ok(new ResponseModel<List<NoteEntity>> { Status = true, Message = "GetNoteByLabel Successfull", Data = result });
+            }
+            else
+            {
+                return BadRequest(new ResponseModel<List<NoteEntity>> { Status = false, Message = "GetNoteByLabel Failed", Data = null }); ;
             }
         }
     }
