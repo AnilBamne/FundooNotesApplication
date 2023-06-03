@@ -104,28 +104,20 @@ namespace RepositoryLayer.Service
             }
         }
         //update label
-        public LabelEntity UpdateLabel(UpdateLabelModel updateLabelModel,long noteId,long userId)
+        public string UpdateLabel(long labelId,string newLabelName)
         {
             try
             {
-                var findUser=fundooContext.LableTable.Where(l => l.UserId == userId).FirstOrDefault();
-                if (findUser != null)
+                var findLabel=fundooContext.LableTable.FirstOrDefault(a=>a.LabelId==labelId);
+                if (findLabel != null)
                 {
-                    var findNote=fundooContext.LableTable.Where(l => l.NoteId == noteId).FirstOrDefault();
-                    if(findNote != null)
-                    {
-                        findNote.LabelName= updateLabelModel.LabelName;
-                        fundooContext.SaveChanges();
-                        return findNote;
-                    }
-                    else
-                    {
-                        return null;
-                    }
+                    findLabel.LabelName= newLabelName;
+                    fundooContext.SaveChanges();
+                    return "Label name updated";
                 }
                 else
                 {
-                    return null;
+                    return "Label Id Not Found";
                 }
             }
             catch(Exception ex)
@@ -135,25 +127,16 @@ namespace RepositoryLayer.Service
         }
 
         //delete label
-        public bool DeleteLabel(long labelId, long userId)
+        public bool DeleteLabel(long labelId)
         {
             try
             {
-                var getUser = fundooContext.LableTable.Where(a => a.UserId == userId);
-                if (getUser != null)
+                var result = fundooContext.LableTable.FirstOrDefault(a => a.LabelId == labelId);
+                if (result != null)
                 {
-                    var findLabel = getUser.FirstOrDefault(a => a.LabelId == labelId);
-                    if (findLabel != null)
-                    {
-                        //if the label is present we r removing it from table
-                        fundooContext.LableTable.Remove(findLabel);
-                        fundooContext.SaveChanges();
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                    fundooContext.LableTable.Remove(result);
+                    fundooContext.SaveChanges();
+                    return true;
                 }
                 else
                 {

@@ -37,22 +37,22 @@ namespace BusinessLayer.Service
                 throw ex;
             }
         }
-        public LabelEntity UpdateLabel(UpdateLabelModel updateLabelModel, long noteId, long userId)
+        public string UpdateLabel(long labelId, string newLabelName)
         {
             try
             {
-                return labelRepository.UpdateLabel(updateLabelModel,noteId,userId);
+                return labelRepository.UpdateLabel(labelId, newLabelName);
             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
-        public bool DeleteLabel(long labelId, long userId)
+        public bool DeleteLabel(long labelId)
         {
             try
             {
-                return labelRepository.DeleteLabel(labelId, userId);
+                return labelRepository.DeleteLabel(labelId);
             }
             catch (Exception ex)
             {

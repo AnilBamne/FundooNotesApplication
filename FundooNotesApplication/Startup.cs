@@ -61,6 +61,10 @@ namespace FundooNotesApplication
             services.AddTransient<ILabelBusiness, LabelBusiness>();
             services.AddTransient<ICollabRepository, CollabRepository>();
             services.AddTransient<ICollabBusiness, CollabBusiness>();
+            services.AddTransient<IEmployeeBusiness, EmployeeBusiness>();
+            services.AddTransient<IEmployeeRepo, EmployeeRepo>();
+
+
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {

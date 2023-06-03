@@ -70,19 +70,18 @@ namespace FundooNotesApplication.Controllers
 
         [Authorize]
         [HttpPut("UpdateLabel")]
-        public ActionResult UpdateLabel(UpdateLabelModel updateLabelModel, long noteId)
+        public ActionResult UpdateLabel(long labelId,string newLabelName)
         {
             try
             {
-                long userId=Convert.ToInt32(User.Claims.FirstOrDefault(a=>a.Type=="UserId").Value);
-                var result = labelBusiness.UpdateLabel(updateLabelModel, noteId, userId);
+                var result = labelBusiness.UpdateLabel(labelId, newLabelName);
                 if (result != null)
                 {
-                    return Ok(new ResponseModel<LabelEntity> { Status = true, Message = "update label succeded", Data = result });
+                    return Ok(new ResponseModel<string> { Status = true, Message = "update label succeded", Data = result });
                 }
                 else
                 {
-                    return BadRequest(new ResponseModel<LabelEntity> { Status = false, Message = "update failed", Data = null });
+                    return BadRequest(new ResponseModel<string> { Status = false, Message = "update failed", Data = result });
                 }
             }
             catch(Exception ex)
@@ -93,12 +92,11 @@ namespace FundooNotesApplication.Controllers
 
         [Authorize]
         [HttpDelete("DeleteLabel")]
-        public ActionResult DeleteLabel(long noteId)
+        public ActionResult DeleteLabel(long labelId)
         {
             try
             {
-                long userId = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserId").Value);
-                bool result = labelBusiness.DeleteLabel(noteId, userId);
+                bool result = labelBusiness.DeleteLabel(labelId);
                 if (result == true)
                 {
                     return Ok(new ResponseModel<bool> { Status = true, Message = "Label Deleted Successfully", Data = result });
