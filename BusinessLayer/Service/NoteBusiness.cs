@@ -108,5 +108,13 @@ namespace BusinessLayer.Service
         {
             return notesRepository.SetNoteColor(userId, noteId, color);
         }
+        public int CountNotes(long userId)
+        {
+            return notesRepository.CountNotes(userId);
+        }
+        public NoteCountModel CountAllNotes(long userId)
+        {
+            return notesRepository.CountAllNotes(userId);
+        }
     }
 }

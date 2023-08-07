@@ -196,5 +196,35 @@ namespace FundooNotesApplication.Controllers
                 return Ok(new ResponseModel<List<NoteEntity>> { Status = true, Message = "No such notes are available", Data = null });
             }
         }
+        [Authorize]
+        [HttpGet("CountNotes")]
+        public ActionResult CountNotes()
+        {
+            long UserId=Convert.ToInt32(User.Claims.FirstOrDefault(a=>a.Type=="UserId").Value);
+            var result=notesBusiness.CountNotes(UserId);
+            if (result != 0)
+            {
+                return Ok(new ResponseModel<int> { Status = true,Message="Note counted successfully",Data=result });
+            }
+            else
+            {
+                return BadRequest(new ResponseModel<int> { Status = false, Message = "Note count failed", Data = result });
+            }
+        }
+        [Authorize]
+        [HttpGet("CountAllNotes")]
+        public ActionResult CountAllNotes()
+        {
+            long UserId = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserId").Value);
+            var result = notesBusiness.CountAllNotes(UserId);
+            if (result != null)
+            {
+                return Ok(new ResponseModel<NoteCountModel> { Status = true, Message = "Notes counted successfully", Data = result });
+            }
+            else
+            {
+                return BadRequest(new ResponseModel<NoteCountModel> { Status = false, Message = "Notes count failed", Data = result });
+            }
+        }
     }
 }

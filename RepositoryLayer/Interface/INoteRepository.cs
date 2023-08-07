@@ -17,5 +17,7 @@ namespace RepositoryLayer.Interface
         public bool ArchiveOrUnarchive(long userId, long noteId);
         public List<NoteEntity> GetNoteByKeawords(string input);
         public string SetNoteColor(long userId, long noteId, string color);
+        public int CountNotes(long userId);
+        public NoteCountModel CountAllNotes(long userId);
     }
 }

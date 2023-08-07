@@ -218,5 +218,23 @@ namespace RepositoryLayer.Service
             fundooContext.SaveChanges();
             return note.Color;
         }
+        public int CountNotes(long userId)
+        {
+            int count=fundooContext.NoteDataTable.Where(u=>u.UserId==userId).Count();
+            return count;
+        }
+        public NoteCountModel CountAllNotes(long userId)
+        {
+            NoteCountModel model = new NoteCountModel();
+            int AllNotescount = fundooContext.NoteDataTable.Where(u => u.UserId == userId).Count();
+            int TrashedNotes=fundooContext.NoteDataTable.Where(a=>a.UserId==userId&&a.IsTrash==true).Count();
+            int ArchivedNotes = fundooContext.NoteDataTable.Where(a => a.UserId == userId && a.IsArchive == true).Count();
+            int ColouredNotes = fundooContext.NoteDataTable.Where(a => a.UserId == userId && a.Color !="string" && a.Color !=null).Count();
+            model.TotalNotes = AllNotescount;
+            model.TrashedNotes=TrashedNotes;
+            model.ArchivedNotes=ArchivedNotes;
+            model.ColouredNotes=ColouredNotes;
+            return model;
+        }
     }
 }
