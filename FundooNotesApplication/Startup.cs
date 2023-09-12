@@ -26,18 +26,34 @@ namespace FundooNotesApplication
 {
     public class Startup
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Startup"/> class.
+        /// Constructor.
+        /// </summary>
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            this.Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
+
+        /// <summary>
+        /// ConfigureServices.
+        /// </summary>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<FundooContext>(Options => Options.UseSqlServer(Configuration["ConnectionStrings:FundooDB"]));
-            //for RabbitMQ
+            // for redies cache
+            services.AddStackExchangeRedisCache(o =>
+            {
+                o.Configuration = "localhost:6379";
+            });
+
+
+            services.AddDbContext<FundooContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:FundooDB"]));
+
+            // for RabbitMQ
             services.AddMassTransit(x =>
             {
                 x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(config =>

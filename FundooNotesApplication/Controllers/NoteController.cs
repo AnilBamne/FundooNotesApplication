@@ -3,11 +3,14 @@ using CommonLayer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 using RepositoryLayer.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace FundooNotesApplication.Controllers
 {
@@ -17,10 +20,11 @@ namespace FundooNotesApplication.Controllers
     public class NoteController : ControllerBase
     {
         private readonly INoteBusiness notesBusiness;
-
-        public NoteController(INoteBusiness notesBusiness)
+        private readonly IDistributedCache distributedCache;
+        public NoteController(INoteBusiness notesBusiness,IDistributedCache distributedCache)
         {
             this.notesBusiness = notesBusiness;
+            this.distributedCache = distributedCache;
         }
 
         //Adding notes
@@ -47,28 +51,72 @@ namespace FundooNotesApplication.Controllers
             }
         }
         //Fetching all noetes of perticular user
+        //[Authorize]
+        //[HttpGet("GetAllNotes")]
+        //public ActionResult GetAllNotes()
+        //{
+        //    try
+        //    {
+        //        long userId=Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserId").Value);
+        //        var result=notesBusiness.GetAllNotes(userId);
+        //        if(result != null)
+        //        {
+        //            return Ok(new ResponseModel<List<NoteEntity> >{ Status = true, Message = "Getting all notes succeded", Data = result });
+        //        }
+        //        else
+        //        {
+        //            return BadRequest(new ResponseModel<List<NoteEntity> >{ Status = false, Message = "Getting all notes failed", Data = null });
+        //        }
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
+
+        //----------------- reddies--------------------
         [Authorize]
         [HttpGet("GetAllNotes")]
-        public ActionResult GetAllNotes()
+        public async Task<IActionResult> GetAllNotes()
         {
             try
             {
-                long userId=Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserId").Value);
-                var result=notesBusiness.GetAllNotes(userId);
-                if(result != null)
+                var cacheKey = $"noteList_{User.FindFirst("UserId").Value}"; //defining the key and value
+                var serializedNoteList=await distributedCache.GetStringAsync(cacheKey);
+
+                List<NoteEntity> noteList;
+                if(serializedNoteList != null)
                 {
-                    return Ok(new ResponseModel<List<NoteEntity> >{ Status = true, Message = "Getting all notes succeded", Data = result });
+                    noteList=JsonConvert.DeserializeObject<List<NoteEntity>>(serializedNoteList);
                 }
                 else
                 {
-                    return BadRequest(new ResponseModel<List<NoteEntity> >{ Status = false, Message = "Getting all notes failed", Data = null });
+                    long userId = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserId").Value);
+                    noteList = notesBusiness.GetAllNotes(userId);
+                    serializedNoteList = JsonConvert.SerializeObject(noteList);
+                    await distributedCache.SetStringAsync(
+                        cacheKey, 
+                        serializedNoteList,
+                        new DistributedCacheEntryOptions { 
+                            AbsoluteExpirationRelativeToNow=TimeSpan.FromMinutes(10),
+                            SlidingExpiration=TimeSpan.FromMinutes(10)
+                        });
+                }
+                if (noteList != null)
+                {
+                    return Ok(new ResponseModel<List<NoteEntity>> { Status = true, Message = "Getting all notes succeded", Data = noteList });
+                }
+                else
+                {
+                    return BadRequest(new ResponseModel<List<NoteEntity>> { Status = false, Message = "Getting all notes failed", Data = null });
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
         }
+        //-------------------------------------
         //Update existing note
 
         [Authorize]
