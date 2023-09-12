@@ -87,8 +87,8 @@ namespace FundooNotesApplication
                 options.IdleTimeout = TimeSpan.FromMinutes(15);
             });
 
-            //configuring swagger middleware
-            services.AddSwaggerGen(a =>
+            // configuring swagger middleware
+            _ = services.AddSwaggerGen(a =>
             {
                 a.AddSecurityDefinition(
                     "Bearer",
@@ -100,7 +100,6 @@ namespace FundooNotesApplication
                         BearerFormat = "JWT",
                         In = ParameterLocation.Header,
                         Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
-
                     });
                 a.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
@@ -109,13 +108,13 @@ namespace FundooNotesApplication
                     {
                         Reference=new OpenApiReference
                         {
-                            Type=ReferenceType.SecurityScheme,
-                            Id="Bearer"
-                        }
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer",
+                        },
                     },
                     new string[]
                     {}
-                    }
+                    },
                 });
             });
             services.AddAuthentication(options =>
@@ -128,11 +127,11 @@ namespace FundooNotesApplication
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
-                    ValidIssuer = Configuration["Jwt:Issuer"],
-                    ValidAudience = Configuration["Jwt:Audience"],
+                    ValidIssuer = this.Configuration["Jwt:Issuer"],
+                    ValidAudience = this.Configuration["Jwt:Audience"],
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.Configuration["Jwt:Key"]))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.Configuration["Jwt:Key"])),
                 };
 
             });
@@ -149,13 +148,19 @@ namespace FundooNotesApplication
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+
+        /// <summary>
+        /// Here we add middle wares.
+        /// </summary>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseCors("AllowOrigin");
+
             // This middleware serves generated Swagger document as a JSON endpoint
             app.UseAuthentication();
             app.UseSwagger();
             app.UseSession();
+
             // This middleware serves the Swagger documentation UI
             app.UseSwaggerUI(c =>
             {
@@ -178,8 +183,6 @@ namespace FundooNotesApplication
             {
                 endpoints.MapControllers();
             });
-
-           
         }
     }
 }

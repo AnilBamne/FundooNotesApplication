@@ -74,7 +74,9 @@ namespace FundooNotesApplication.Controllers
         //    }
         //}
 
-        //----------------- reddies--------------------
+        /// <summary>
+        /// Implementing rediws cache.
+        /// </summary>
         [Authorize]
         [HttpGet("GetAllNotes")]
         public async Task<IActionResult> GetAllNotes()
@@ -116,12 +118,13 @@ namespace FundooNotesApplication.Controllers
                 throw ex;
             }
         }
-        //-------------------------------------
-        //Update existing note
 
+        /// <summary>
+        /// Update existing note.
+        /// </summary>
         [Authorize]
         [HttpPut("UpdateNote")]
-        public ActionResult UpdateNote(UpdateNoteModel updateNoteModel,long noteId)
+        public ActionResult UpdateNote(UpdateNoteModel updateNoteModel, long noteId)
         {
             try
             {
@@ -141,6 +144,7 @@ namespace FundooNotesApplication.Controllers
                 throw ex;
             }
         }
+
         [Authorize]
         [HttpDelete("DeleteNote")]
         public ActionResult DeleteNote(long noteId)
@@ -164,7 +168,7 @@ namespace FundooNotesApplication.Controllers
             }
         }
 
-        //Pin or Unpin
+        // Pin or Unpin
         [Authorize]
         [HttpPut("PinOrUnpinNote")]
         public ActionResult PinOrPinNote(long noteId)
@@ -181,7 +185,7 @@ namespace FundooNotesApplication.Controllers
             }
         }
 
-        //Trash or Untrash
+        // Trash or Untrash
         [Authorize]
         [HttpPut("TrashOrUntrash")]
         public ActionResult TrashOrUntrash(long noteId)
@@ -198,7 +202,7 @@ namespace FundooNotesApplication.Controllers
             }
         }
 
-        //Archive or Unarchive
+        // Archive or Unarchive
         [Authorize]
         [HttpPut("ArchiveOrUnarchive")]
         public ActionResult ArchiveOrUnarchive(long noteId)
@@ -214,6 +218,7 @@ namespace FundooNotesApplication.Controllers
                 return Ok(new ResponseModel<bool> { Status = true, Message = "Note UnArchived Successfully", Data = result });
             }
         }
+
         [Authorize]
         [HttpPut("SetNoteColor")]
         public ActionResult SetNoteColor(long noteId,string color)
@@ -230,11 +235,16 @@ namespace FundooNotesApplication.Controllers
             }
         }
 
+        /// <summary>
+        /// search note by keyword.
+        /// </summary>
+        /// <param name="keyword">search keyword.</param>
+        /// <returns>note.</returns>
         [Authorize]
         [HttpGet("GetNoteByKeyword")]
         public ActionResult SearchNote(string keyword)
         {
-            var res = notesBusiness.GetNoteByKeawords(keyword);
+            var res = this.notesBusiness.GetNoteByKeawords(keyword);
             if (res != null)
             {
                 return Ok(new ResponseModel<List<NoteEntity>> { Status = true, Message = "Note having keyword fount", Data = res });
@@ -244,6 +254,11 @@ namespace FundooNotesApplication.Controllers
                 return Ok(new ResponseModel<List<NoteEntity>> { Status = true, Message = "No such notes are available", Data = null });
             }
         }
+
+        /// <summary>
+        /// count.
+        /// </summary>
+        /// <returns>count.</returns>
         [Authorize]
         [HttpGet("CountNotes")]
         public ActionResult CountNotes()
@@ -259,6 +274,11 @@ namespace FundooNotesApplication.Controllers
                 return BadRequest(new ResponseModel<int> { Status = false, Message = "Note count failed", Data = result });
             }
         }
+
+        /// <summary>
+        /// counting notes of a perticular user.
+        /// </summary>
+        /// <returns> count. </returns>
         [Authorize]
         [HttpGet("CountAllNotes")]
         public ActionResult CountAllNotes()
